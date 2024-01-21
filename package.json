@@ -1,0 +1,20 @@
+{
+  "name": "@thuoe/util-directives",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thuoe/util-directives.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thuoe/util-directives/issues"
+  },
+  "homepage": "https://github.com/thuoe/util-directives#readme"
+}
