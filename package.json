@@ -1,9 +1,10 @@
 {
-  "name": "@thuoe/util-directives",
+  "name": "@thuoe/gql-util-directives",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -16,5 +17,9 @@
   "bugs": {
     "url": "https://github.com/thuoe/util-directives/issues"
   },
-  "homepage": "https://github.com/thuoe/util-directives#readme"
+  "homepage": "https://github.com/thuoe/util-directives#readme",
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "typescript": "^5.3.3"
+  }
 }
