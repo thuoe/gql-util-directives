@@ -9,5 +9,9 @@
     "lib": ["ES2022"],
     "types": ["node", "jest"],
     "baseUrl": ".",
+    "paths": {
+      "@src": ["src", "dist"],
+      "@src/directives/*": ["src/directives/*", "dist/directives/*"],
+    },
   },
 }
