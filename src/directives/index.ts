@@ -1,5 +1,7 @@
-const test = () => {
-  console.log('Hello World!')
-}
+import encodingDirective from '@src/directives/encode'
 
-export default test
+const directives = Object.freeze({
+  encodingDirective,
+})
+
+export default directives
