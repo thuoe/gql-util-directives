@@ -1,43 +1,42 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import encodingDirective from '@src/directives/encode';
 
 const typeDefs = `#graphql
-  type Book {
-    title: String
-    author: String
-  }
-  type Query {
-    books: [Book]
-  }
-
   type User {
     firstName: String
-    lastName: String
-    password: String
+    lastName: String @encode(method: "base64")
+  }
+
+  type Query {
+    user: User
   }
 `;
 
-const books = [
-  {
-    title: 'The Awakening',
-    author: 'Kate Chopin',
-  },
-  {
-    title: 'City of Glass',
-    author: 'Paul Auster',
-  },
-];
-
 const resolvers = {
   Query: {
-    books: () => books,
+    user: () => ({
+      firstName: 'Eddie',
+      lastName: 'Thuo',
+    })
   },
 };
 
+const { encodingDirectiveTypeDefs, encodingDirectiveTransformer } = encodingDirective('encode')
+
+let schema = makeExecutableSchema(({
+  typeDefs: [
+    encodingDirectiveTypeDefs,
+    typeDefs
+  ],
+  resolvers
+}))
+
+schema = encodingDirectiveTransformer(schema)
 
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+  schema,
 });
 
 startStandaloneServer(server, {
