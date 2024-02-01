@@ -27,8 +27,17 @@ const resolvers = {
   },
 };
 
-describe('@thuoe/util-schema-directives', () => {
+describe('@encode directive', () => {
   let testServer: ApolloServer
+
+  const testQuery = `
+  query ExampleQuery {
+    user {
+      firstName
+      lastName
+    }
+  }
+  `
 
   afterEach(async () => {
     if (testServer) {
@@ -56,14 +65,7 @@ describe('@thuoe/util-schema-directives', () => {
     testServer = new ApolloServer({ schema })
 
     const response = await testServer.executeOperation<{ user: { firstName: string, lastName: string } }>({
-      query: `
-      query ExampleQuery {
-        user {
-          firstName
-          lastName
-        }
-      }
-      `
+      query: testQuery
     })
 
     assert(response.body.kind === 'single');
@@ -71,4 +73,32 @@ describe('@thuoe/util-schema-directives', () => {
     expect(response.body.singleResult.data.user.firstName).toEqual(Buffer.from('Eddie').toString('hex'));
     expect(response.body.singleResult.data.user.lastName).toEqual(Buffer.from('Thuo').toString('base64'));
   });
+
+  test('it will throw an error if the encoding method is not recognized', async () => {
+    const schema = buildSchema({
+      typeDefs: [
+        `type User {
+          firstName: String @encode(method: "blah")
+          lastName: String
+        }
+    
+        type Query {
+          user: User
+        }
+        `,
+        encodingDirectiveTypeDefs,
+      ],
+      resolvers,
+    })
+
+    testServer = new ApolloServer({ schema })
+
+    const response = await testServer.executeOperation<{ user: { firstName: string, lastName: string } }>({
+      query: testQuery
+    })
+
+    assert(response.body.kind === 'single');
+    expect(response.body.singleResult.errors).toBeDefined();
+    expect(response.body.singleResult.errors[0].message).toBe('Invalid Encoding Method!');
+  })
 });
