@@ -10,6 +10,7 @@ const resolvers = {
     user: () => ({
       firstName: 'Eddie',
       lastName: 'Thuo',
+      age: 28
     })
   },
 };
@@ -116,5 +117,40 @@ describe('@regex directive', () => {
     assert(response.body.kind === 'single');
     expect(response.body.singleResult.errors).toBeDefined();
     expect(response.body.singleResult.errors[0].message).toEqual('Syntax Error: "/([a-z]+/" is not recognized as a valid pattern');
+  })
+
+  it('will throw an error if validating a scalar type other than String', async () => {
+    const schema = buildSchema({
+      typeDefs: [
+        `type User {
+        firstName: String
+        lastName: String
+        age: Int @regex(pattern: "28")
+      }
+  
+      type Query {
+        user: User
+      }
+      `,
+        regexDirectiveTypeDefs,
+      ],
+      resolvers,
+      transformers: [regexDirectiveTransformer],
+    })
+
+    testServer = new ApolloServer({ schema })
+
+    const response = await testServer.executeOperation<{ user: { firstName: string, lastName: string } }>({
+      query: `
+        query ExampleQuery {
+          user {
+            age
+          }
+        }
+      `
+    })
+    assert(response.body.kind === 'single');
+    expect(response.body.singleResult.errors).toBeDefined();
+    expect(response.body.singleResult.errors[0].message).toEqual('Unable to validate field "age" of type Int. @regex directive can only be used on scalar type String');
   })
 })
