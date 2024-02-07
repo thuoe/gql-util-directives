@@ -87,7 +87,7 @@ describe('@regex directive', () => {
     assert(response.body.kind === 'single');
     expect(response.body.singleResult.errors).toBeDefined();
     expect(response.body.singleResult.errors[0].message).toEqual('String must match pattern: "Sam"');
-
+    expect(response.body.singleResult.errors[0].extensions.code).toEqual('REGEX_VALIDATION_FAILED');
   })
 
   it('will throw an error if unable to parse regex', async () => {
@@ -116,6 +116,5 @@ describe('@regex directive', () => {
     assert(response.body.kind === 'single');
     expect(response.body.singleResult.errors).toBeDefined();
     expect(response.body.singleResult.errors[0].message).toEqual('Syntax Error: "/([a-z]+/" is not recognized as a valid pattern');
-
   })
 })
