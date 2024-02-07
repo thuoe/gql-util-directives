@@ -1,22 +1,13 @@
 import { ApolloServer } from '@apollo/server';
-import { makeExecutableSchema } from '@graphql-tools/schema';
 import encodingDirective from '@src/directives/encode';
 import assert from 'assert';
+import { buildSchema } from './util';
 
 const { encodingDirectiveTransformer, encodingDirectiveTypeDefs } = encodingDirective('encode')
 
-const directiveTransformers = [
+const transformers = [
   encodingDirectiveTransformer
 ]
-
-const buildSchema = ({ typeDefs, resolvers }) => {
-  let schema = makeExecutableSchema({
-    typeDefs,
-    resolvers
-  })
-  schema = directiveTransformers.reduce((curSchema, transformer) => transformer(curSchema), schema)
-  return schema
-}
 
 const resolvers = {
   Query: {
@@ -60,6 +51,7 @@ describe('@encode directive', () => {
         encodingDirectiveTypeDefs,
       ],
       resolvers,
+      transformers,
     })
 
     testServer = new ApolloServer({ schema })
@@ -89,6 +81,7 @@ describe('@encode directive', () => {
         encodingDirectiveTypeDefs,
       ],
       resolvers,
+      transformers,
     })
 
     testServer = new ApolloServer({ schema })
