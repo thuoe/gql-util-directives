@@ -6,8 +6,9 @@ import regexDirective from '@src/directives/regex';
 
 const typeDefs = String.raw`#graphql
   type User {
-    firstName: String @regex(pattern: "Sam")
+    firstName: String @regex(pattern: "Eddie")
     lastName: String @encode(method: "base64")
+    age: Int @regex(pattern: "28")
   }
 
   type Query {
@@ -20,6 +21,7 @@ const resolvers = {
     user: () => ({
       firstName: 'Eddie',
       lastName: 'Thuo',
+      age: 28,
     })
   },
 };
