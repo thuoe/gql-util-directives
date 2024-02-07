@@ -23,12 +23,10 @@ Following encoding methods:
 
 ```graphql
 type User {
-  firstName: String @encode(pattern: "hex")
+  firstName: String @encode(method: "hex")
   lastName: String @encode(method: "base64")
 }
 ```
-
-Under development
 
 ## @regex
 
