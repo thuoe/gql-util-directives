@@ -15,6 +15,19 @@ Simple utlity library for custom GraphQL schema directives
 
 ## @encode
 
+You can use the `@encode` directive on fields defined using the `String` scalar type.
+
+Following encoding methods:
+
+`ascii | utf8 | utf16le | ucs2 | base64 | base64url | latin1 | binary | hex`
+
+```graphql
+type User {
+  firstName: String @encode(pattern: "hex")
+  lastName: String @encode(method: "base64")
+}
+```
+
 Under development
 
 ## @regex
