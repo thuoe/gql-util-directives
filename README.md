@@ -30,4 +30,30 @@ type User {
 
 ## @regex
 
-Under development
+You can use the `@regex` directive to validate fields using the `String` scalar type. It will throw an
+`ValidationError` in the event that the pattern defined has a syntax if no matches are found against the field value.
+
+```graphql
+type User {
+  firstName: String @regex(pattern: "(John|Micheal)")
+  lastName: String @regex(pattern: "\\b[A-Z]\\w+\\b")
+}
+```
+
+⚠️ Escaping characters
+
+If you are defining a regex pattern using backslashes must escape them (`//`) **and** pattern invoke the function `String.raw()` to the schema so that the escape characters are not ignored:
+
+```typescript
+const typeDefs = String.raw`
+  type User {
+    firstName: String @regex(pattern: "(Eddie|Sam)")
+    lastName: String @regex(pattern: "\\b[A-Z]\\w+\\b")
+    age: Int
+  }
+
+  type Query {
+    user: User
+  }
+`;
+```
