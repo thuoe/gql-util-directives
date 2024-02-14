@@ -11,6 +11,8 @@ Simple utlity library for custom GraphQL schema directives
 
 # Get started
 
+🛠️ Work in progress
+
 # Directives
 
 ## @encode
