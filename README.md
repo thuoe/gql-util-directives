@@ -1,5 +1,11 @@
 <h1 align="center">gql-util-directives</h1>
 
+<p align="center">
+  <a href="https://github.com/thuoe/gql-util-directives/actions/workflows/ci.yml">
+    <img src="https://github.com/thuoe/gql-util-directives/actions/workflows/ci.yml/badge.svg?branch=next" alt="CI status">
+  </a>
+</p>
+
 <h3 align="center">
 Simple utlity library for custom GraphQL schema directives
 </h3>
