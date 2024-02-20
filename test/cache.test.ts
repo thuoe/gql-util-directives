@@ -9,11 +9,11 @@ jest.spyOn(global, 'setTimeout');
 const cache = new Map<string, string>()
 
 const cacheCallback = {
-  has: jest.fn(key => cache.has(key)),
-  get: jest.fn(key => cache.get(key)),
-  delete: jest.fn(key => cache.delete(key)),
-  set: jest.fn((key: string, value: string) => {
-    cache.set(key, value)
+  has: jest.fn((key: string) => Promise.resolve(cache.has(key))),
+  get: jest.fn((key: string) => Promise.resolve(cache.get(key))),
+  delete: jest.fn((key: string) => Promise.resolve(cache.delete(key))),
+  set: jest.fn(async (key: string, value: string) => {
+    Promise.resolve(cache.set(key, value))
   }),
 }
 

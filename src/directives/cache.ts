@@ -2,13 +2,24 @@ import { MapperKind, getDirective, mapSchema } from '@graphql-tools/utils'
 import { GraphQLSchema, defaultFieldResolver } from 'graphql'
 
 interface CachingImpl {
-  has: (key: string) => boolean
-  get: (key: string) => string
-  set: (key: string, value: string) => void
-  delete: (key: string) => boolean
+  has: (key: string) => Promise<boolean>
+  get: (key: string) => Promise<string>
+  set: (key: string, value: string) => Promise<void>
+  delete: (key: string) => Promise<boolean>
 }
 
-const cacheDirective = (directiveName: string, cache: CachingImpl = new Map<string, string>()) => {
+const map = new Map<string, string>()
+
+const inMemoryCache: CachingImpl = {
+  has: (key: string) => Promise.resolve(map.has(key)),
+  get: (key: string) => Promise.resolve(map.get(key)),
+  delete: (key: string) => Promise.resolve(map.delete(key)),
+  set: async (key: string, value: string) => {
+    Promise.resolve(map.set(key, value))
+  },
+}
+
+const cacheDirective = (directiveName: string, cache: CachingImpl = inMemoryCache) => {
   return {
     cacheDirectiveTypeDefs: `directive @${directiveName}(key: String, ttl: Int) on FIELD_DEFINITION`,
     cacheDirectiveTransformer: (schema: GraphQLSchema) => mapSchema(schema, {
@@ -21,8 +32,9 @@ const cacheDirective = (directiveName: string, cache: CachingImpl = new Map<stri
             ...fieldConfig,
             resolve: async (source, args, context, info) => {
               const { returnType } = info
-              if (cache.has(key)) {
-                const value = cache.get(key)
+              const exists = await cache.has(key)
+              if (exists) {
+                const value = await cache.get(key)
                 if (returnType.toString() === 'string') {
                   return value
                 }
@@ -36,8 +48,8 @@ const cacheDirective = (directiveName: string, cache: CachingImpl = new Map<stri
               }
               const result = await resolve(source, args, context, info)
               cache.set(key, JSON.stringify(result))
-              setTimeout(() => {
-                cache.delete(key)
+              setTimeout(async () => {
+                await cache.delete(key)
               }, ttl)
               return result
             }
