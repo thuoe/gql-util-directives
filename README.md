@@ -14,6 +14,8 @@ Simple utlity library for custom GraphQL schema directives
 - [Directives](#directives)
   - [@encode](#encode)
   - [@regex](#regex)
+  - [@cache](#cache)
+    - [Overriding in-memory cache](#overriding-in-memory-cache)
 
 # Get started
 
@@ -65,3 +67,48 @@ const typeDefs = String.raw`
   }
 `;
 ```
+
+## @cache
+
+You can use `@cache` directive to take advantage of a in-memory cache for a field value
+
+```graphql
+type Book {
+  name: String
+  price: String @cache(key: "book_price", ttl: 3000)
+}
+```
+
+`key` - represents the unique key for field value you wish to cache
+
+`ttl` - time-to-live argument for how long the field value should exist within the cache before expiring (in milliseconds)
+
+### Overriding in-memory cache
+
+If you wish to take leverage something more powerful (for example [Redis](https://redis.io/)), you can override the in-memory solution with your own implementation.
+
+Example:
+
+```typescript
+import Redis from 'ioredis'
+
+const redis = new Redis()
+....
+const cache = {
+  has: (key: string) => redis.exists(key),
+  get: (key: string) => redis.get(key),
+  delete:(key: string) => redis.delete(key),
+  set: async (key: string, value: string) => {
+    await redis.set(key, value)
+  },
+}
+...
+const { cacheDirectiveTypeDefs, cacheDirectiveTransformer } = cacheDirective('cache', cache)
+```
+
+You must confirm to this set of function signatures to make this work:
+
+- `has: (key: string) => Promise<boolean>` Checks if a key exists in the cache.
+- `get: (key: string) => Promise<string>` Retrieves the value associated with a key from the cache.
+- `set: (key: string, value: string) => Promise<void>` Sets a key-value pair in the cache.
+- `delete: (key: string) => Promise<boolean>` Deletes a key and its associated value from the cache.
