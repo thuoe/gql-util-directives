@@ -1,5 +1,5 @@
 import { MapperKind, getDirective, mapSchema } from '@graphql-tools/utils'
-import { GraphQLSchema, defaultFieldResolver } from 'graphql'
+import { GraphQLError, GraphQLSchema, defaultFieldResolver } from 'graphql'
 
 interface CachingImpl {
   has: (key: string) => Promise<boolean>
@@ -44,6 +44,11 @@ const cacheDirective = (directiveName: string, cache: CachingImpl = inMemoryCach
                 }
                 if (returnType.toString() === 'Int') {
                   return Number(value)
+                }
+                try {
+                  return JSON.parse(value)
+                } catch (error) {
+                  throw new GraphQLError(`Error parsing field value: ${returnType.toString()}`)
                 }
               }
               const result = await resolve(source, args, context, info)
