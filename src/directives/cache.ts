@@ -35,10 +35,10 @@ const cacheDirective = (directiveName: string, cache: CachingImpl = inMemoryCach
               const exists = await cache.has(key)
               if (exists) {
                 const value = await cache.get(key)
-                if (returnType.toString() === 'string') {
+                if (returnType.toString() === 'String') {
                   return value
                 }
-                if (returnType.toString() === 'boolean') {
+                if (returnType.toString() === 'Boolean') {
                   const boolValue = (/true/).test(value);
                   return boolValue
                 }
