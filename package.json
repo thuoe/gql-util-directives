@@ -16,6 +16,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
+    "clean": "rm -r dist",
     "build:prod": "tsc --project tsconfig.prod.json && tsc-alias -p tsconfig.prod.json",
     "build:server": "tsc --project tsconfig.server.json",
     "dev": "nodemon --project tsconfig.server.json server/index.ts",
