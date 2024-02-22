@@ -1,7 +1,7 @@
 import { MapperKind, getDirective, mapSchema } from '@graphql-tools/utils'
 import { GraphQLError, GraphQLSchema, defaultFieldResolver } from 'graphql'
 
-interface CachingImpl {
+export interface CachingImpl {
   has: (key: string) => Promise<boolean>
   get: (key: string) => Promise<string>
   set: (key: string, value: string) => Promise<void>
