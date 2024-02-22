@@ -11,6 +11,7 @@ Simple utlity library for custom GraphQL schema directives
 </h3>
 
 - [Get started](#get-started)
+- [Local Development](#local-development)
 - [Directives](#directives)
   - [@encode](#encode)
   - [@regex](#regex)
@@ -20,6 +21,22 @@ Simple utlity library for custom GraphQL schema directives
 # Get started
 
 🛠️ Work in progress
+
+# Local Development
+
+Install dependences via NPM:
+
+```sh
+npm install
+```
+
+Run local environment (Apollo Studio):
+
+```sh
+npm run dev
+```
+
+Link to Apollo Studio can be found on http://localhost:4000 to perform mutations and queries.
 
 # Directives
 
