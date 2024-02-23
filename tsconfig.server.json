@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "outDir": "bundle",
     "sourceMap": true
   },
   "include": ["src/**/*", "server/**/*"]
