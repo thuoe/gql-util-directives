@@ -7,7 +7,7 @@
 </p>
 
 <h3 align="center">
-Simple utlity library for custom GraphQL schema directives
+Simple utility library for custom GraphQL schema directives
 </h3>
 
 - [Get started](#get-started)
