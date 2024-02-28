@@ -1,8 +1,13 @@
 {
   "name": "@thuoe/gql-util-directives",
   "version": "1.0.0",
-  "description": "",
-  "keywords": [],
+  "description": "A simple utility package of GraphQL schema directives",
+  "keywords": [
+    "graphql",
+    "directives",
+    "apollo-server",
+    "typescript"
+  ],
   "homepage": "https://github.com/thuoe/util-directives#readme",
   "bugs": {
     "url": "https://github.com/thuoe/util-directives/issues"
