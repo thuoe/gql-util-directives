@@ -17,7 +17,7 @@
     "url": "git+https://github.com/thuoe/util-directives.git"
   },
   "license": "ISC",
-  "author": "",
+  "author": "Eddie Thuo",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
