@@ -27,7 +27,8 @@
     "dev": "nodemon --project tsconfig.server.json server/index.ts",
     "lint": "eslint .",
     "test": "jest",
-    "prepare": "npm run build:prod"
+    "prepare": "npm run build:prod",
+    "release": "semantic-release"
   },
   "dependencies": {
     "@graphql-tools/schema": "^10.0.2",
@@ -45,10 +46,16 @@
     "jest": "^29.7.0",
     "nodemon": "^3.0.3",
     "prettier": "^3.2.4",
+    "semantic-release": "^23.0.2",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.8",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.3.3"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ]
   }
 }
