@@ -13,18 +13,84 @@ Simple utility library for custom GraphQL schema directives
 - [Get started](#get-started)
 - [Local Development](#local-development)
 - [Directives](#directives)
-  - [@encode](#encode)
-  - [@regex](#regex)
-  - [@cache](#cache)
+  - [@encode `encodingDirective()`](#encode-encodingdirective)
+  - [@regex `regexDirective()`](#regex-regexdirective)
+  - [@cache `cacheDirective()`](#cache-cachedirective)
     - [Overriding in-memory cache](#overriding-in-memory-cache)
 
 # Get started
 
-🛠️ Work in progress
+Install package:
+
+```sh
+npm install --save @thuoe/gql-util-directive
+```
+
+Example of importing the `@regex` directive & instantiating with Apollo Server:
+
+```typescript
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import directives from "@thuoe/gql-util-directives";
+
+const typeDefs = String.raw`#graphql
+  type User {
+    firstName: String
+    lastName: String @regex(pattern: "\\b[A-Z]\\w+\\b")
+    age: Int
+  }
+
+  type Query {
+    user: User
+  }
+`;
+
+const resolvers = {
+  Query: {
+    user: () => ({
+      firstName: 'Michael',
+      lastName: 'Jordan',
+      age: 61,
+    })
+  },
+};
+
+const { regexDirective } = directives
+const { regexDirectiveTypeDefs, regexDirectiveTransformer } = regexDirective('regex')
+
+const transformers = [
+  regexDirectiveTransformer,
+]
+
+let schema = makeExecutableSchema(({
+  typeDefs: [
+    regexDirectiveTypeDefs,
+    typeDefs
+  ],
+  resolvers
+}))
+
+schema = transformers.reduce((curSchema, transformer) => transformer(curSchema), schema)
+
+const server = new ApolloServer({
+  schema,
+});
+
+startStandaloneServer(server, {
+  listen: { port: 4000 },
+}).then(({ url }) => {
+  console.log(`🚀 Server ready at: ${url}`);
+})
+```
+
+Here are the possible directive functions that are exposed as part of this util package:
+
+`regexDirective | encodingDirective | cacheDirective`
 
 # Local Development
 
-Install dependences via NPM:
+Install local dependencies:
 
 ```sh
 npm install
@@ -40,7 +106,7 @@ Link to Apollo Studio can be found on http://localhost:4000 to perform mutations
 
 # Directives
 
-## @encode
+## @encode `encodingDirective()`
 
 You can use the `@encode` directive on fields defined using the `String` scalar type.
 
@@ -55,7 +121,7 @@ type User {
 }
 ```
 
-## @regex
+## @regex `regexDirective()`
 
 You can use the `@regex` directive to validate fields using the `String` scalar type. It will throw an
 `ValidationError` in the event that the pattern defined has a syntax if no matches are found against the field value.
@@ -85,7 +151,7 @@ const typeDefs = String.raw`
 `;
 ```
 
-## @cache
+## @cache `cacheDirective()`
 
 You can use `@cache` directive to take advantage of a in-memory cache for a field value
 
