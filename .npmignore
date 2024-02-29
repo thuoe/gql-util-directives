@@ -1,5 +1,6 @@
 .github
 .vscode
+bundle
 server
 src
 test
