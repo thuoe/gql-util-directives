@@ -1,0 +1,13 @@
+.github
+.vscode
+bundle
+server
+src
+test
+.editorconfig
+.eslintrc.json
+.prettierrc
+jest.config.js
+nodemon.json
+tsconfig.json
+tsconfig.*.json
