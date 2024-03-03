@@ -6,6 +6,7 @@ src
 test
 .editorconfig
 .eslintrc.json
+.nvmrc
 .prettierrc
 jest.config.js
 nodemon.json
