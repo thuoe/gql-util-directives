@@ -17,7 +17,7 @@ const cacheCallback = {
   }),
 }
 
-const { cacheDirectiveTypeDefs, cacheDirectiveTransformer } = cacheDirective('cache', cacheCallback)
+const { cacheDirectiveTypeDefs, cacheDirectiveTransformer } = cacheDirective({ cache: cacheCallback })
 
 describe('@cache directive', () => {
   let testServer: ApolloServer;

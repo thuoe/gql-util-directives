@@ -13,9 +13,9 @@ Simple utility library for custom GraphQL schema directives
 - [Get started](#get-started)
 - [Local Development](#local-development)
 - [Directives](#directives)
-  - [@encode `encodingDirective()`](#encode-encodingdirective)
-  - [@regex `regexDirective()`](#regex-regexdirective)
-  - [@cache `cacheDirective()`](#cache-cachedirective)
+  - [@encode](#encode)
+  - [@regex](#regex)
+  - [@cache](#cache)
     - [Overriding in-memory cache](#overriding-in-memory-cache)
 
 # Get started
@@ -29,9 +29,9 @@ npm install --save @thuoe/gql-util-directive
 Example of importing the `@regex` directive & instantiating with Apollo Server:
 
 ```typescript
-import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
-import { makeExecutableSchema } from '@graphql-tools/schema';
+import { ApolloServer } from "@apollo/server";
+import { startStandaloneServer } from "@apollo/server/standalone";
+import { makeExecutableSchema } from "@graphql-tools/schema";
 import directives from "@thuoe/gql-util-directives";
 
 const typeDefs = String.raw`#graphql
@@ -49,29 +49,28 @@ const typeDefs = String.raw`#graphql
 const resolvers = {
   Query: {
     user: () => ({
-      firstName: 'Michael',
-      lastName: 'Jordan',
+      firstName: "Michael",
+      lastName: "Jordan",
       age: 61,
-    })
+    }),
   },
 };
 
-const { regexDirective } = directives
-const { regexDirectiveTypeDefs, regexDirectiveTransformer } = regexDirective('regex')
+const { regexDirective } = directives;
+const { regexDirectiveTypeDefs, regexDirectiveTransformer } =
+  regexDirective("regex");
 
-const transformers = [
-  regexDirectiveTransformer,
-]
+const transformers = [regexDirectiveTransformer];
 
-let schema = makeExecutableSchema(({
-  typeDefs: [
-    regexDirectiveTypeDefs,
-    typeDefs
-  ],
-  resolvers
-}))
+let schema = makeExecutableSchema({
+  typeDefs: [regexDirectiveTypeDefs, typeDefs],
+  resolvers,
+});
 
-schema = transformers.reduce((curSchema, transformer) => transformer(curSchema), schema)
+schema = transformers.reduce(
+  (curSchema, transformer) => transformer(curSchema),
+  schema,
+);
 
 const server = new ApolloServer({
   schema,
@@ -81,7 +80,7 @@ startStandaloneServer(server, {
   listen: { port: 4000 },
 }).then(({ url }) => {
   console.log(`🚀 Server ready at: ${url}`);
-})
+});
 ```
 
 Here are the possible directive functions that are exposed as part of this util package:
@@ -106,7 +105,9 @@ Link to Apollo Studio can be found on http://localhost:4000 to perform mutations
 
 # Directives
 
-## @encode `encodingDirective()`
+## @encode
+
+`encodingDirective(directiveName?: string)`
 
 You can use the `@encode` directive on fields defined using the `String` scalar type.
 
@@ -121,7 +122,9 @@ type User {
 }
 ```
 
-## @regex `regexDirective()`
+## @regex
+
+`regexDirective(directiveName?: string)`
 
 You can use the `@regex` directive to validate fields using the `String` scalar type. It will throw an
 `ValidationError` in the event that the pattern defined has a syntax if no matches are found against the field value.
@@ -151,7 +154,9 @@ const typeDefs = String.raw`
 `;
 ```
 
-## @cache `cacheDirective()`
+## @cache
+
+`cacheDirective({ directiveName, cache }?: { directiveName?: string, cache?: CachingImpl })`
 
 You can use `@cache` directive to take advantage of a in-memory cache for a field value
 
@@ -186,7 +191,7 @@ const cache = {
   },
 }
 ...
-const { cacheDirectiveTypeDefs, cacheDirectiveTransformer } = cacheDirective('cache', cache)
+const { cacheDirectiveTypeDefs, cacheDirectiveTransformer } = cacheDirective({ cache: callback })
 ```
 
 You must confirm to this set of function signatures to make this work:
