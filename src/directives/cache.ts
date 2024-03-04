@@ -8,6 +8,11 @@ export interface CachingImpl {
   delete: (key: string) => Promise<boolean>
 }
 
+type Params = {
+  directiveName: string
+  cache: CachingImpl
+}
+
 const map = new Map<string, string>()
 
 const inMemoryCache: CachingImpl = {
@@ -19,7 +24,7 @@ const inMemoryCache: CachingImpl = {
   },
 }
 
-const cacheDirective = (directiveName: string, cache: CachingImpl = inMemoryCache) => {
+const cacheDirective = ({ directiveName = 'cache', cache = inMemoryCache }: Partial<Params> = {}) => {
   return {
     cacheDirectiveTypeDefs: `directive @${directiveName}(key: String, ttl: Int) on FIELD_DEFINITION`,
     cacheDirectiveTransformer: (schema: GraphQLSchema) => mapSchema(schema, {

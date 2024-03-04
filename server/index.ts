@@ -29,7 +29,7 @@ const resolvers = {
 
 const { encodingDirectiveTypeDefs, encodingDirectiveTransformer } = encodingDirective()
 const { regexDirectiveTypeDefs, regexDirectiveTransformer } = regexDirective()
-const { cacheDirectiveTypeDefs, cacheDirectiveTransformer } = cacheDirective('cache')
+const { cacheDirectiveTypeDefs, cacheDirectiveTransformer } = cacheDirective()
 
 const transformers = [
   encodingDirectiveTransformer,
