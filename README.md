@@ -4,6 +4,9 @@
   <a href="https://github.com/thuoe/gql-util-directives/actions/workflows/ci.yml">
     <img src="https://github.com/thuoe/gql-util-directives/actions/workflows/ci.yml/badge.svg?branch=next" alt="CI status">
   </a>
+  <a href="https://badge.fury.io/js/@thuoe%2Fgql-util-directives">
+    <img src="https://badge.fury.io/js/@thuoe%2Fgql-util-directives.svg" alt="npm version" height="18">
+  </a>
 </p>
 
 <h3 align="center">
