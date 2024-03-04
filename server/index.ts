@@ -27,8 +27,8 @@ const resolvers = {
   },
 };
 
-const { encodingDirectiveTypeDefs, encodingDirectiveTransformer } = encodingDirective('encode')
-const { regexDirectiveTypeDefs, regexDirectiveTransformer } = regexDirective('regex')
+const { encodingDirectiveTypeDefs, encodingDirectiveTransformer } = encodingDirective()
+const { regexDirectiveTypeDefs, regexDirectiveTransformer } = regexDirective()
 const { cacheDirectiveTypeDefs, cacheDirectiveTransformer } = cacheDirective('cache')
 
 const transformers = [

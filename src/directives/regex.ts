@@ -2,7 +2,7 @@ import { MapperKind, getDirective, mapSchema } from '@graphql-tools/utils'
 import { GraphQLError, GraphQLSchema, defaultFieldResolver, isScalarType } from 'graphql'
 import ValidationError from '@src/errors'
 
-const regexDirective = (directiveName: string) => {
+const regexDirective = (directiveName: string = 'regex') => {
   return {
     regexDirectiveTypeDefs: `directive @${directiveName}(pattern: String) on FIELD_DEFINITION`,
     regexDirectiveTransformer: (schema: GraphQLSchema) => mapSchema(schema, {
