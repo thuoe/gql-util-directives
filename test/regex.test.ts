@@ -3,7 +3,7 @@ import regexDirective from '@src/directives/regex'
 import { buildSchema } from './util'
 import assert from 'assert';
 
-const { regexDirectiveTypeDefs, regexDirectiveTransformer } = regexDirective('regex')
+const { regexDirectiveTypeDefs, regexDirectiveTransformer } = regexDirective()
 
 const resolvers = {
   Query: {

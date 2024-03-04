@@ -1,7 +1,7 @@
 import { MapperKind, getDirective, mapSchema } from '@graphql-tools/utils'
 import { GraphQLError, GraphQLSchema, defaultFieldResolver } from 'graphql'
 
-const encodingDirective = (directiveName: string) => {
+const encodingDirective = (directiveName: string = 'encode') => {
   return {
     encodingDirectiveTypeDefs: `directive @${directiveName}(method: String) on FIELD_DEFINITION`,
     encodingDirectiveTransformer: (schema: GraphQLSchema) => mapSchema(schema, {

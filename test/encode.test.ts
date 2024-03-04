@@ -3,7 +3,7 @@ import encodingDirective from '@src/directives/encode';
 import assert from 'assert';
 import { buildSchema } from './util';
 
-const { encodingDirectiveTransformer, encodingDirectiveTypeDefs } = encodingDirective('encode')
+const { encodingDirectiveTransformer, encodingDirectiveTypeDefs } = encodingDirective()
 
 const transformers = [
   encodingDirectiveTransformer
