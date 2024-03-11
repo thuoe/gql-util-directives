@@ -26,7 +26,7 @@ Simple utility library for custom GraphQL schema directives
 Install package:
 
 ```sh
-npm install --save @thuoe/gql-util-directive
+npm install --save @thuoe/gql-util-directives
 ```
 
 Example of importing the `@regex` directive & instantiating with Apollo Server:
