@@ -1,4 +1,5 @@
-import { MapperKind, getDirective, mapSchema } from '@graphql-tools/utils'
+import { MapperKind, mapSchema } from '@graphql-tools/utils'
+import { fetchDirective } from '@src/utils'
 import { GraphQLError, GraphQLSchema, defaultFieldResolver } from 'graphql'
 
 export interface CachingImpl {
@@ -30,7 +31,7 @@ const cacheDirective = ({ directiveName = 'cache', cache = inMemoryCache }: Part
     cacheDirectiveTransformer: (schema: GraphQLSchema) => mapSchema(schema, {
       [MapperKind.OBJECT_FIELD]: fieldConfig => {
         const { resolve = defaultFieldResolver } = fieldConfig
-        const cacheDirective = getDirective(schema, fieldConfig, directiveName)?.[0]
+        const cacheDirective = fetchDirective<{ ttl: number, key: string }>(schema, fieldConfig, directiveName)
         if (cacheDirective) {
           const { ttl, key } = cacheDirective
           return {
