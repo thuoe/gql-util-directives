@@ -27,7 +27,7 @@ const inMemoryCache: CachingImpl = {
 
 const cacheDirective = ({ directiveName = 'cache', cache = inMemoryCache }: Partial<Params> = {}) => {
   return {
-    cacheDirectiveTypeDefs: `directive @${directiveName}(key: String, ttl: Int) on FIELD_DEFINITION`,
+    cacheDirectiveTypeDefs: `directive @${directiveName}(key: String!, ttl: Int!) on FIELD_DEFINITION`,
     cacheDirectiveTransformer: (schema: GraphQLSchema) => mapSchema(schema, {
       [MapperKind.OBJECT_FIELD]: fieldConfig => {
         const { resolve = defaultFieldResolver } = fieldConfig

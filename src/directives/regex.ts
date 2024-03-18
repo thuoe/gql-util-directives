@@ -5,7 +5,7 @@ import { fetchDirective } from '@src/utils'
 
 const regexDirective = (directiveName: string = 'regex') => {
   return {
-    regexDirectiveTypeDefs: `directive @${directiveName}(pattern: String) on FIELD_DEFINITION`,
+    regexDirectiveTypeDefs: `directive @${directiveName}(pattern: String!) on FIELD_DEFINITION`,
     regexDirectiveTransformer: (schema: GraphQLSchema) => mapSchema(schema, {
       [MapperKind.OBJECT_FIELD]: fieldConfig => {
         const regexDirective = fetchDirective<{ pattern: string }>(schema, fieldConfig, directiveName)
