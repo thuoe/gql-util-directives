@@ -1,13 +1,14 @@
-import { MapperKind, getDirective, mapSchema } from '@graphql-tools/utils'
+import { MapperKind, mapSchema } from '@graphql-tools/utils'
 import { GraphQLError, GraphQLSchema, defaultFieldResolver, isScalarType } from 'graphql'
 import ValidationError from '@src/errors'
+import { fetchDirective } from '@src/utils'
 
 const regexDirective = (directiveName: string = 'regex') => {
   return {
-    regexDirectiveTypeDefs: `directive @${directiveName}(pattern: String) on FIELD_DEFINITION`,
+    regexDirectiveTypeDefs: `directive @${directiveName}(pattern: String!) on FIELD_DEFINITION`,
     regexDirectiveTransformer: (schema: GraphQLSchema) => mapSchema(schema, {
       [MapperKind.OBJECT_FIELD]: fieldConfig => {
-        const regexDirective = getDirective(schema, fieldConfig, directiveName)?.[0]
+        const regexDirective = fetchDirective<{ pattern: string }>(schema, fieldConfig, directiveName)
         if (regexDirective && isScalarType(fieldConfig.type)) {
           const { pattern } = regexDirective
           const { resolve = defaultFieldResolver } = fieldConfig
