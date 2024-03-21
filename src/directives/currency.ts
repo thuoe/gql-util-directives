@@ -20,6 +20,11 @@ const currencyDirective = (directiveName: string = 'currency') => {
           return {
             ...fieldConfig,
             resolve: async (source, args, context, info) => {
+              const { fieldName, returnType } = info
+              const type = returnType.toString()
+              if (type !== 'String') {
+                throw new GraphQLError(`Unable to validate field "${fieldName}" of type ${type}. @currency directive can only be used on scalar type String`)
+              }
               const value = await resolve(source, args, context, info)
               try {
                 const response = await fetch(`https://www.google.com/search?q=${value}+${from}+to+${to}+&hl=en`)
