@@ -63,7 +63,39 @@ describe('@currency directive', () => {
     expect(fetchSpy).toHaveBeenCalled()
     expect(fetchSpy).toHaveBeenCalledWith(`https://www.google.com/search?q=${amount}+${from}+to+${to}+&hl=en`)
   })
+
   it.todo('will convert from one currency to another and return a integer')
   it.todo('will convert from one currency to another and format with a seperator')
-  it.todo('will throw an error if currency code is not recognized')
+
+  it('will throw an error if currency code(s) are not recognized', async () => {
+    const fetchSpy = jest.spyOn(global, 'fetch')
+    const from = 'BLAH'
+    const to = 'HMMMM'
+    const schema = buildSchema({
+      typeDefs: [
+        `type User {
+          amount: String @currency(from: "${from}", to: "${to}")
+        }
+
+        type Query {
+          user: User
+        }
+        `,
+        currencyDirectiveTypeDefs
+      ],
+      resolvers,
+      transformers: [currencyDirectiveTransformer]
+    })
+
+    testServer = new ApolloServer({ schema })
+
+    const response = await testServer.executeOperation<{ user: { amount: string } }>({
+      query: testQuery
+    })
+
+    assert(response.body.kind === 'single')
+    expect(response.body.singleResult.errors).toBeDefined();
+    expect(response.body.singleResult.errors[0].message).toBe(`Currency codes: ${from},${to} are not valid!`);
+    expect(fetchSpy).not.toHaveBeenCalled()
+  })
 })
