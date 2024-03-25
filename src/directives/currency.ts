@@ -42,8 +42,8 @@ const currencyDirective = (directiveName: string = 'currency') => {
               validateCodes(from, to)
               const { fieldName, returnType } = info
               const type = returnType.toString()
-              if (type !== 'String') {
-                throw new GraphQLError(`Unable to validate field "${fieldName}" of type ${type}. @currency directive can only be used on scalar type String`)
+              if (type !== 'String' && type !== 'Float') {
+                throw new GraphQLError(`Unable to validate field "${fieldName}" of type ${type}. @currency directive can only be used on scalar type String or Float`)
               }
               const value = await resolve(source, args, context, info)
               try {
@@ -51,7 +51,8 @@ const currencyDirective = (directiveName: string = 'currency') => {
                 const html = await response.text()
                 const $ = cheerio.load(html)
                 const $input = $('.iBp4i') // TODO: hacky... find better selector
-                return $input.text().split(' ')[0]
+                const amount = $input.text().split(' ')[0]
+                return type === 'String' ? amount : type === 'Float' ? Number(amount) : null
               } catch (error) {
                 throw new GraphQLError(`Error converting amount ${value} from ${from} to ${to}!`, error)
               }

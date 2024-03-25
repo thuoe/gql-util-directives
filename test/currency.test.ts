@@ -1,7 +1,8 @@
-import { ApolloServer } from '@apollo/server'
-import currencyDirective from '@src/directives/currency'
-import { buildSchema } from './util'
 import assert from 'assert'
+import currencyDirective from '@src/directives/currency'
+import { ApolloServer } from '@apollo/server'
+import { buildSchema } from './util'
+
 
 const { currencyDirectiveTypeDefs, currencyDirectiveTransformer } = currencyDirective()
 
@@ -63,9 +64,6 @@ describe('@currency directive', () => {
     expect(fetchSpy).toHaveBeenCalled()
     expect(fetchSpy).toHaveBeenCalledWith(`https://www.google.com/search?q=${amount}+${from}+to+${to}+&hl=en`)
   })
-
-  it.todo('will convert from one currency to another and return a integer')
-  it.todo('will convert from one currency to another and format with a seperator')
 
   it('will throw an error if currency code(s) are not recognized', async () => {
     const fetchSpy = jest.spyOn(global, 'fetch')
