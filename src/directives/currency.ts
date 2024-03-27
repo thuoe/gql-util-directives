@@ -5,8 +5,8 @@ import { CurrencyCode } from '@src/types'
 import * as cheerio from 'cheerio'
 
 type CurrencyDirectiveArgs = {
-  from: string
-  to: string
+  from: CurrencyCode
+  to: CurrencyCode
 }
 
 const generateGraphQLEnum = (origin: Record<string, string>) => {
@@ -22,6 +22,19 @@ const validateCodes = (...codes: string[]) => {
   const invalidCodes = codes.filter(code => !validCodes.includes(code))
   if (invalidCodes.length > 0) {
     throw new GraphQLError(`Currency codes: ${invalidCodes} are not valid!`)
+  }
+}
+
+const fetchAmount = async ({ originalAmount, from, to }: { originalAmount: number, from: CurrencyCode, to: CurrencyCode }) => {
+  try {
+    const response = await fetch(`https://www.google.com/search?q=${originalAmount}+${from}+to+${to}+&hl=en`)
+    const html = await response.text()
+    const $ = cheerio.load(html)
+    const $input = $('.iBp4i') // TODO: hacky... find better selector
+    const amount = $input.text().split(' ')[0]
+    return amount
+  } catch (error) {
+    throw new GraphQLError(`Error converting amount ${originalAmount} from ${from} to ${to}!`, error)
   }
 }
 
@@ -46,16 +59,8 @@ const currencyDirective = (directiveName: string = 'currency') => {
                 throw new GraphQLError(`Unable to validate field "${fieldName}" of type ${type}. @currency directive can only be used on scalar type String or Float`)
               }
               const value = await resolve(source, args, context, info)
-              try {
-                const response = await fetch(`https://www.google.com/search?q=${value}+${from}+to+${to}+&hl=en`)
-                const html = await response.text()
-                const $ = cheerio.load(html)
-                const $input = $('.iBp4i') // TODO: hacky... find better selector
-                const amount = $input.text().split(' ')[0]
-                return type === 'String' ? amount : type === 'Float' ? Number(amount) : null
-              } catch (error) {
-                throw new GraphQLError(`Error converting amount ${value} from ${from} to ${to}!`, error)
-              }
+              const amount = fetchAmount({ originalAmount: value as number, from, to })
+              return amount
             }
           }
 
