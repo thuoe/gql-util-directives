@@ -219,6 +219,6 @@ type Car {
 }
 ```
 
-The amount can either resolved with the scalar types `String` or `Int`
+The amount can either resolved with the scalar types `String` or `Float`
 
 The valid currency codes to use as part of the directive's arguments can be found [here](./src/types.ts).
