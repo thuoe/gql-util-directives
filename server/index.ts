@@ -4,12 +4,14 @@ import { makeExecutableSchema } from '@graphql-tools/schema';
 import encodingDirective from '@src/directives/encode';
 import regexDirective from '@src/directives/regex';
 import cacheDirective from '@src/directives/cache';
+import currencyDirective from '@src/directives/currency';
 
 const typeDefs = String.raw`#graphql
   type User {
     firstName: String @regex(pattern: "(Eddie|Sam)")
     lastName: String @regex(pattern: "\\b[A-Z]\\w+\\b")
     age: Int @cache(key: "user_age", ttl: 3000)
+    amount: String @currency(from: "GBP", to: "USD")
   }
 
   type Query {
@@ -23,6 +25,7 @@ const resolvers = {
       firstName: 'Eddie',
       lastName: 'Thuo',
       age: 28,
+      amount: '100',
     })
   },
 };
@@ -30,11 +33,13 @@ const resolvers = {
 const { encodingDirectiveTypeDefs, encodingDirectiveTransformer } = encodingDirective()
 const { regexDirectiveTypeDefs, regexDirectiveTransformer } = regexDirective()
 const { cacheDirectiveTypeDefs, cacheDirectiveTransformer } = cacheDirective()
+const { currencyDirectiveTypeDefs, currencyDirectiveTransformer } = currencyDirective()
 
 const transformers = [
   encodingDirectiveTransformer,
   regexDirectiveTransformer,
   cacheDirectiveTransformer,
+  currencyDirectiveTransformer,
 ]
 
 let schema = makeExecutableSchema(({
@@ -42,6 +47,7 @@ let schema = makeExecutableSchema(({
     encodingDirectiveTypeDefs,
     regexDirectiveTypeDefs,
     cacheDirectiveTypeDefs,
+    currencyDirectiveTypeDefs,
     typeDefs
   ],
   resolvers

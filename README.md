@@ -20,6 +20,7 @@ Simple utility library for custom GraphQL schema directives
   - [@regex](#regex)
   - [@cache](#cache)
     - [Overriding in-memory cache](#overriding-in-memory-cache)
+  - [@currency](#currency)
 
 # Get started
 
@@ -203,3 +204,21 @@ You must confirm to this set of function signatures to make this work:
 - `get: (key: string) => Promise<string>` Retrieves the value associated with a key from the cache.
 - `set: (key: string, value: string) => Promise<void>` Sets a key-value pair in the cache.
 - `delete: (key: string) => Promise<boolean>` Deletes a key and its associated value from the cache.
+
+## @currency
+
+`currencyDirective(directiveName?: string)`
+
+You can use the `@currency` directive to fetch the latest exchange rate of a given amount
+
+```graphql
+type Car {
+  make: String
+  model: String
+  price: String @currency(from: "GBP", to: "USD")
+}
+```
+
+The amount can either resolved with the scalar types `String` or `Float`
+
+The valid currency codes to use as part of the directive's arguments can be found [here](./src/types.ts).
