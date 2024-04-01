@@ -214,8 +214,8 @@ You can use the `@currency` directive to fetch the latest exchange rate of a giv
 ```graphql
 type Car {
   make: String
-  model
-  price: String @currency(from: "GBP", ttl: "USD")
+  model: String
+  price: String @currency(from: "GBP", to: "USD")
 }
 ```
 
