@@ -25,7 +25,7 @@ const validateCodes = (...codes: string[]) => {
   }
 }
 
-const fetchAmount = async ({ originalAmount, from, to }: { originalAmount: number, from: CurrencyCode, to: CurrencyCode }) => {
+export const fetchAmount = async ({ originalAmount, from, to }: { originalAmount: number, from: CurrencyCode, to: CurrencyCode }) => {
   try {
     const response = await fetch(`https://www.google.com/search?q=${originalAmount}+${from}+to+${to}+&hl=en`)
     const html = await response.text()
@@ -59,7 +59,7 @@ const currencyDirective = (directiveName: string = 'currency') => {
                 throw new GraphQLError(`Unable to validate field "${fieldName}" of type ${type}. @currency directive can only be used on scalar type String or Float`)
               }
               const value = await resolve(source, args, context, info)
-              const amount = fetchAmount({ originalAmount: value as number, from, to })
+              const amount = await fetchAmount({ originalAmount: value as number, from, to })
               return amount
             }
           }
