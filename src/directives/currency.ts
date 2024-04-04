@@ -1,4 +1,4 @@
-import { fetchDirective } from '@src/utils'
+import { fetchDirective, generateGraphQLEnum } from '@src/utils'
 import { MapperKind, mapSchema } from '@graphql-tools/utils'
 import { GraphQLError, GraphQLSchema, defaultFieldResolver } from 'graphql'
 import { CurrencyCode } from '@src/types'
@@ -7,14 +7,6 @@ import * as cheerio from 'cheerio'
 type CurrencyDirectiveArgs = {
   from: CurrencyCode
   to: CurrencyCode
-}
-
-const generateGraphQLEnum = (origin: Record<string, string>) => {
-  const formattedCodes = Object.keys(origin).map((code) => {
-    return `${code} \n`
-  }).join('')
-  const result = `enum CurrencyCode {\n${formattedCodes} }`
-  return result
 }
 
 const validateCodes = (...codes: string[]) => {
@@ -40,8 +32,8 @@ export const fetchAmount = async ({ originalAmount, from, to }: { originalAmount
 
 const currencyDirective = (directiveName: string = 'currency') => {
   return {
-    currencyDirectiveTypeDefs: `directive @${directiveName} (from: String!, to: String!) on FIELD_DEFINITION
-      ${generateGraphQLEnum(CurrencyCode)}
+    currencyDirectiveTypeDefs: `directive @${directiveName} (from: CurrencyCode!, to: CurrencyCode!) on FIELD_DEFINITION
+      ${generateGraphQLEnum('CurrencyCode', CurrencyCode)}
   `,
     currencyDirectiveTransformer: (schema: GraphQLSchema) => mapSchema(schema, {
       [MapperKind.OBJECT_FIELD]: (fieldConfig) => {

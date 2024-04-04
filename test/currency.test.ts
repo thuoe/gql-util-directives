@@ -43,7 +43,7 @@ describe('@currency directive', () => {
     const schema = buildSchema({
       typeDefs: [
         `type User {
-          amount: String @currency(from: "${from}", to: "${to}")
+          amount: String @currency(from: ${from}, to: ${to})
         }
 
         type Query {
@@ -70,33 +70,24 @@ describe('@currency directive', () => {
   })
 
   it('will throw an error if currency code(s) are not recognized', async () => {
-    const from = 'BLAH'
-    const to = 'HMMMM'
-    const schema = buildSchema({
-      typeDefs: [
-        `type User {
-          amount: String @currency(from: "${from}", to: "${to}")
-        }
-
-        type Query {
-          user: User
-        }
+    const buildFaultySchema = () =>
+      buildSchema({
+        typeDefs: [
+          `
+          type User {
+            amount: String @currency(from: BOB, to: CAT)
+          }
+          
+          type Query {
+            user: User
+          }
         `,
-        currencyDirectiveTypeDefs
-      ],
-      resolvers,
-      transformers: [currencyDirectiveTransformer]
-    })
+          currencyDirectiveTypeDefs
+        ],
+        resolvers,
+        transformers: [currencyDirectiveTransformer]
+      })
 
-    testServer = new ApolloServer({ schema })
-
-    const response = await testServer.executeOperation<{ user: { amount: string } }>({
-      query: testQuery
-    })
-
-    assert(response.body.kind === 'single')
-    expect(response.body.singleResult.errors).toBeDefined();
-    expect(response.body.singleResult.errors[0].message).toBe(`Currency codes: ${from},${to} are not valid!`);
-    expect(directive.fetchAmount).not.toHaveBeenCalled()
+    expect(buildFaultySchema).toThrow()
   })
 })

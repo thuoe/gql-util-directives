@@ -11,7 +11,7 @@ const typeDefs = String.raw`#graphql
     firstName: String @regex(pattern: "(Eddie|Sam)")
     lastName: String @regex(pattern: "\\b[A-Z]\\w+\\b")
     age: Int @cache(key: "user_age", ttl: 3000)
-    amount: String @currency(from: "GBP", to: "USD")
+    amount: String @currency(from: GBP, to: USD)
   }
 
   type Query {
