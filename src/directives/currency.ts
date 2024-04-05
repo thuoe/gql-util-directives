@@ -9,14 +9,6 @@ type CurrencyDirectiveArgs = {
   to: CurrencyCode
 }
 
-const validateCodes = (...codes: string[]) => {
-  const validCodes = Object.keys(CurrencyCode)
-  const invalidCodes = codes.filter(code => !validCodes.includes(code))
-  if (invalidCodes.length > 0) {
-    throw new GraphQLError(`Currency codes: ${invalidCodes} are not valid!`)
-  }
-}
-
 export const fetchAmount = async ({ originalAmount, from, to }: { originalAmount: number, from: CurrencyCode, to: CurrencyCode }) => {
   try {
     const response = await fetch(`https://www.google.com/search?q=${originalAmount}+${from}+to+${to}+&hl=en`)
@@ -44,7 +36,6 @@ const currencyDirective = (directiveName: string = 'currency') => {
           return {
             ...fieldConfig,
             resolve: async (source, args, context, info) => {
-              validateCodes(from, to)
               const { fieldName, returnType } = info
               const type = returnType.toString()
               if (type !== 'String' && type !== 'Float') {
