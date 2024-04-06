@@ -215,10 +215,10 @@ You can use the `@currency` directive to fetch the latest exchange rate of a giv
 type Car {
   make: String
   model: String
-  price: String @currency(from: "GBP", to: "USD")
+  price: String @currency(from: GBP, to: USD)
 }
 ```
 
-The amount can either resolved with the scalar types `String` or `Float`
+The field can either be resolved with scalar types `String` or `Float`
 
 The valid currency codes to use as part of the directive's arguments can be found [here](./src/types.ts).

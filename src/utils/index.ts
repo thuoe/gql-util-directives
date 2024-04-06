@@ -13,3 +13,11 @@ export const fetchDirective = <T extends Record<string, unknown>>(schema: GraphQ
   }
   return null
 }
+
+export const generateGraphQLEnum = (enumName: string, origin: Record<string, string>) => {
+  const formattedValues = Object.keys(origin).map((key) => {
+    return `${key} \n`
+  }).join('')
+  const result = `enum ${enumName} {\n${formattedValues} }`
+  return result
+}
