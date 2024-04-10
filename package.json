@@ -26,7 +26,8 @@
     "build:server": "tsc --project tsconfig.server.json",
     "dev": "nodemon --project tsconfig.server.json server/index.ts",
     "lint": "eslint .",
-    "test": "jest",
+    "test": "jest --silent",
+    "test:watch": "npm run test -- --watch test/*.ts",
     "prepare": "npm run build:prod",
     "release": "semantic-release"
   },
