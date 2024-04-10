@@ -24,7 +24,7 @@ describe('@log directive', () => {
   }
   `
   beforeEach(() => {
-    jest.spyOn(directive, 'log')
+    jest.spyOn(directive, 'log').mockImplementation()
   })
 
   afterEach(async () => {
