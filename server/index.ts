@@ -5,6 +5,7 @@ import encodingDirective from '@src/directives/encode';
 import regexDirective from '@src/directives/regex';
 import cacheDirective from '@src/directives/cache';
 import currencyDirective from '@src/directives/currency';
+import logDirective from '@src/directives/log';
 
 const typeDefs = String.raw`#graphql
   type User {
@@ -15,7 +16,7 @@ const typeDefs = String.raw`#graphql
   }
 
   type Query {
-    user: User
+    user: User @log(level: INFO)
   }
 `;
 
@@ -34,12 +35,14 @@ const { encodingDirectiveTypeDefs, encodingDirectiveTransformer } = encodingDire
 const { regexDirectiveTypeDefs, regexDirectiveTransformer } = regexDirective()
 const { cacheDirectiveTypeDefs, cacheDirectiveTransformer } = cacheDirective()
 const { currencyDirectiveTypeDefs, currencyDirectiveTransformer } = currencyDirective()
+const { logDirectiveTypeDefs, logDirectiveTransformer } = logDirective()
 
 const transformers = [
   encodingDirectiveTransformer,
   regexDirectiveTransformer,
   cacheDirectiveTransformer,
   currencyDirectiveTransformer,
+  logDirectiveTransformer,
 ]
 
 let schema = makeExecutableSchema(({
@@ -48,6 +51,7 @@ let schema = makeExecutableSchema(({
     regexDirectiveTypeDefs,
     cacheDirectiveTypeDefs,
     currencyDirectiveTypeDefs,
+    logDirectiveTypeDefs,
     typeDefs
   ],
   resolvers
