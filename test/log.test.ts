@@ -24,7 +24,7 @@ describe('@log directive', () => {
   }
   `
   beforeEach(() => {
-    jest.spyOn(directive, 'log').mockImplementation()
+    jest.spyOn(directive, 'log')
   })
 
   afterEach(async () => {
@@ -59,6 +59,7 @@ describe('@log directive', () => {
     assert(response.body.kind === 'single')
     expect(response.body.singleResult.errors).toBeUndefined();
     expect(directive.log).toHaveBeenCalled()
+    expect(directive.log).toHaveBeenCalledWith({ message: 'Operation Name: TestQuery', level: directive.LogLevel.INFO, toConsole: true })
   })
 
   it.todo('can write to a log file with the preferred file name with a log level, label, timestamp & message')

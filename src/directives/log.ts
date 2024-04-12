@@ -3,7 +3,7 @@ import { fetchDirective, generateGraphQLEnum } from '@src/utils'
 import { GraphQLSchema, defaultFieldResolver } from 'graphql'
 import winston from 'winston'
 
-enum LogLevel {
+export enum LogLevel {
   INFO = 'INFO',
   WARN = 'WARN',
   ERROR = 'ERROR',
@@ -23,8 +23,15 @@ const logger = winston.createLogger({
   levels: customLogLevels,
 })
 
-export const log = ({ message, level }: { level: LogLevel, message: string }) => {
-  logger[level](message)
+export const log = ({ message, level, toConsole }: { level: LogLevel, message: string, toConsole: boolean }) => {
+  if (toConsole) {
+    logger.configure({
+      transports: [
+        new winston.transports.Console({ level })
+      ]
+    })
+    logger[level](message)
+  }
 }
 
 const logDirective = (directiveName: string = 'log') => {
@@ -38,19 +45,12 @@ const logDirective = (directiveName: string = 'log') => {
         const { resolve = defaultFieldResolver } = fieldConfig
         if (logDirective) {
           const { level } = logDirective
-          if (logDirective) {
-            logger.configure({
-              transports: [
-                new winston.transports.Console({ level })
-              ]
-            })
-            return {
-              ...fieldConfig,
-              resolve: async (source, args, context, info) => {
-                const { operation: { name } } = info
-                log({ message: `Operation name: ${name.value}`, level })
-                return resolve(source, args, context, info)
-              }
+          return {
+            ...fieldConfig,
+            resolve: async (source, args, context, info) => {
+              const { operation: { name } } = info
+              log({ message: `Operation Name: ${name.value}`, level, toConsole: true })
+              return resolve(source, args, context, info)
             }
           }
         }
