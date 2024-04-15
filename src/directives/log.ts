@@ -1,7 +1,7 @@
 import { MapperKind, mapSchema } from '@graphql-tools/utils'
 import { fetchDirective, generateGraphQLEnum } from '@src/utils'
 import { GraphQLSchema, defaultFieldResolver } from 'graphql'
-import winston from 'winston'
+import log4js from 'log4js'
 
 export enum LogLevel {
   INFO = 'INFO',
@@ -11,26 +11,13 @@ export enum LogLevel {
   RANDOM = 'RANDOM'
 }
 
-const customLogLevels = {
-  [LogLevel.INFO]: 0,
-  [LogLevel.DEBUG]: 1,
-  [LogLevel.WARN]: 2,
-  [LogLevel.ERROR]: 3,
-  [LogLevel.RANDOM]: 4,
-}
-
-const logger = winston.createLogger({
-  levels: customLogLevels,
-})
+const logger = log4js.getLogger()
 
 export const log = ({ message, level, toConsole }: { level: LogLevel, message: string, toConsole: boolean }) => {
+  const finalLevel = level.toLocaleLowerCase()
+  logger.level = finalLevel
   if (toConsole) {
-    logger.configure({
-      transports: [
-        new winston.transports.Console({ level })
-      ]
-    })
-    logger[level](message)
+    logger[finalLevel](message)
   }
 }
 
