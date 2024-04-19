@@ -6,6 +6,7 @@ import regexDirective from '@src/directives/regex';
 import cacheDirective from '@src/directives/cache';
 import currencyDirective from '@src/directives/currency';
 import logDirective from '@src/directives/log';
+import path from 'path';
 
 const typeDefs = String.raw`#graphql
   type User {
@@ -35,7 +36,9 @@ const { encodingDirectiveTypeDefs, encodingDirectiveTransformer } = encodingDire
 const { regexDirectiveTypeDefs, regexDirectiveTransformer } = regexDirective()
 const { cacheDirectiveTypeDefs, cacheDirectiveTransformer } = cacheDirective()
 const { currencyDirectiveTypeDefs, currencyDirectiveTransformer } = currencyDirective()
-const { logDirectiveTypeDefs, logDirectiveTransformer } = logDirective()
+const { logDirectiveTypeDefs, logDirectiveTransformer } = logDirective({
+  filePath: path.join(__dirname, 'logs', 'application.log')
+})
 
 const transformers = [
   encodingDirectiveTransformer,

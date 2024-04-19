@@ -2,6 +2,8 @@ import { ApolloServer } from '@apollo/server'
 import * as directive from '@src/directives/log'
 import { buildSchema } from './util'
 import assert from 'assert'
+import path from 'path'
+import fs from 'fs'
 
 const { logDirectiveTypeDefs, logDirectiveTransformer } = directive.default()
 
@@ -25,6 +27,16 @@ describe('@log directive', () => {
   `
   beforeEach(() => {
     jest.spyOn(directive, 'log').mockImplementation()
+    jest.spyOn(directive, 'initLogger').mockImplementation((filePath) => {
+      if (filePath) {
+        const { dir } = path.parse(filePath)
+        console.log(`Dir: ${dir}`)
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir)
+        }
+        fs.writeFileSync(filePath, 'Simple log message')
+      }
+    })
   })
 
   afterEach(async () => {
@@ -59,10 +71,41 @@ describe('@log directive', () => {
     assert(response.body.kind === 'single')
     expect(response.body.singleResult.errors).toBeUndefined();
     expect(directive.log).toHaveBeenCalled()
-    expect(directive.log).toHaveBeenCalledWith({ message: 'Operation Name: TestQuery', level: directive.LogLevel.INFO, toConsole: true })
+    expect(directive.log).toHaveBeenCalledWith({ message: 'Operation Name: TestQuery', level: directive.LogLevel.INFO })
   })
 
-  it.todo('can write to a log file with the preferred file name with a log level, label, timestamp & message')
+  it('can write to a log file with the preferred file name with a log level, label, timestamp & message', async () => {
+    const filePath = path.join(__dirname, 'testLogs', 'test.log')
+    const { logDirectiveTypeDefs: typeDefs, logDirectiveTransformer: transformer } = directive.default({
+      filePath,
+    })
+    const schema = buildSchema({
+      typeDefs: [
+        `type User {
+          age: Int @log(level: INFO)
+        }
+
+        type Query {
+          user: User
+        }
+        `,
+        typeDefs
+      ],
+      resolvers,
+      transformers: [transformer]
+
+    })
+
+    testServer = new ApolloServer({ schema })
+
+    const response = await testServer.executeOperation<{ user: { amount: string } }>({
+      query: testQuery
+    })
+
+    assert(response.body.kind === 'single')
+    expect(response.body.singleResult.errors).toBeUndefined();
+    expect(directive.initLogger).toHaveBeenCalledWith(filePath, directive.LogLevel.INFO)
+  })
 
   it('will throw error if the log level is not recognzied', () => {
     const buildFaultySchema = () =>
