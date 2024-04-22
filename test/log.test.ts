@@ -70,12 +70,16 @@ describe('@log directive', () => {
 
     assert(response.body.kind === 'single')
     expect(response.body.singleResult.errors).toBeUndefined();
+    expect(directive.initLogger).toHaveBeenCalledTimes(1)
+    expect(directive.initLogger).toHaveBeenCalledWith(undefined, directive.LogLevel.INFO)
     expect(directive.log).toHaveBeenCalled()
     expect(directive.log).toHaveBeenCalledWith({ message: 'Operation Name: TestQuery', level: directive.LogLevel.INFO })
   })
 
   it('can write to a log file with the preferred file name with a log level, label, timestamp & message', async () => {
-    const filePath = path.join(__dirname, 'testLogs', 'test.log')
+    const fileName = 'test.log'
+    const folderName = 'testLogs'
+    const filePath = path.join(__dirname, folderName, fileName)
     const { logDirectiveTypeDefs: typeDefs, logDirectiveTransformer: transformer } = directive.default({
       filePath,
     })
@@ -104,6 +108,7 @@ describe('@log directive', () => {
 
     assert(response.body.kind === 'single')
     expect(response.body.singleResult.errors).toBeUndefined();
+    expect(directive.initLogger).toHaveBeenCalledTimes(1)
     expect(directive.initLogger).toHaveBeenCalledWith(filePath, directive.LogLevel.INFO)
   })
 
