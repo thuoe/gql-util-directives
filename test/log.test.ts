@@ -27,7 +27,7 @@ describe('@log directive', () => {
   `
   beforeEach(() => {
     jest.spyOn(directive, 'log').mockImplementation()
-    jest.spyOn(directive, 'initLogger').mockImplementation((filePath) => {
+    jest.spyOn(directive, 'initLogger').mockImplementation((_, filePath) => {
       if (filePath) {
         const { dir } = path.parse(filePath)
         console.log(`Dir: ${dir}`)
@@ -71,7 +71,7 @@ describe('@log directive', () => {
     assert(response.body.kind === 'single')
     expect(response.body.singleResult.errors).toBeUndefined();
     expect(directive.initLogger).toHaveBeenCalledTimes(1)
-    expect(directive.initLogger).toHaveBeenCalledWith(undefined, directive.LogLevel.INFO)
+    expect(directive.initLogger).toHaveBeenCalledWith(directive.LogLevel.INFO, undefined)
     expect(directive.log).toHaveBeenCalled()
     expect(directive.log).toHaveBeenCalledWith({ message: 'Operation Name: TestQuery', level: directive.LogLevel.INFO })
   })
@@ -109,7 +109,7 @@ describe('@log directive', () => {
     assert(response.body.kind === 'single')
     expect(response.body.singleResult.errors).toBeUndefined();
     expect(directive.initLogger).toHaveBeenCalledTimes(1)
-    expect(directive.initLogger).toHaveBeenCalledWith(filePath, directive.LogLevel.INFO)
+    expect(directive.initLogger).toHaveBeenCalledWith(directive.LogLevel.INFO, filePath)
   })
 
   it('will throw error if the log level is not recognzied', () => {

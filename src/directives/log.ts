@@ -24,18 +24,20 @@ export const log = ({ message, level }: { level: LogLevel, message: string }) =>
   logger[finalLevel](message)
 }
 
-export const initLogger = (filePath: string, level: LogLevel) => {
-  if (filePath) {
-    log4js.configure({
-      appenders: {
-        app: { type: 'file', filename: filePath },
-      },
-      categories: {
-        default: { appenders: ['app'], level: level.toLowerCase() },
-      },
-    })
-  }
-  logger = log4js.getLogger()
+export const initLogger = (level: LogLevel, filePath?: string) => {
+  log4js.configure({
+    appenders: {
+      console: { type: 'console', },
+      ...(filePath && {
+        file: { type: 'file', filename: filePath },
+      })
+    },
+    categories: {
+      default: { appenders: ['console'], level: level.toLowerCase() },
+      ['@log']: { appenders: ['console', 'file'], level: level.toLowerCase() },
+    },
+  })
+  logger = log4js.getLogger('@log')
 }
 
 const logDirective = ({ directiveName = 'log', filePath }: DirectiveParams = {}) => {
@@ -50,7 +52,7 @@ const logDirective = ({ directiveName = 'log', filePath }: DirectiveParams = {})
         if (logDirective) {
           const { level } = logDirective
           if (!log4js.isConfigured()) {
-            initLogger(filePath, level)
+            initLogger(level, filePath)
           }
           return {
             ...fieldConfig,
