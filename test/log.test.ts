@@ -73,7 +73,7 @@ describe('@log directive', () => {
     expect(directive.initLogger).toHaveBeenCalledTimes(1)
     expect(directive.initLogger).toHaveBeenCalledWith(directive.LogLevel.INFO, undefined)
     expect(directive.log).toHaveBeenCalled()
-    expect(directive.log).toHaveBeenCalledWith({ message: 'Operation Name: TestQuery', level: directive.LogLevel.INFO })
+    expect(directive.log).toHaveBeenCalledWith({ message: 'Operation Type: query, Arguments: [{}], Return Type: Int', level: directive.LogLevel.INFO })
   })
 
   it('can write to a log file with the preferred file name with a log level, label, timestamp & message', async () => {

@@ -57,8 +57,8 @@ const logDirective = ({ directiveName = 'log', filePath }: DirectiveParams = {})
           return {
             ...fieldConfig,
             resolve: async (source, args, context, info) => {
-              const { operation: { name } } = info
-              log({ message: `Operation Name: ${name.value}`, level })
+              const { operation: { operation: operationType }, returnType } = info
+              log({ message: `Operation Type: ${operationType}, Arguments: [${JSON.stringify(args)}], Return Type: ${returnType}`, level })
               return resolve(source, args, context, info)
             }
           }

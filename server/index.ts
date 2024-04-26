@@ -17,18 +17,26 @@ const typeDefs = String.raw`#graphql
   }
 
   type Query {
-    user: User @log(level: INFO)
+    user(firstName: String!): User @log(level: INFO)
   }
 `;
 
+const demoUser = {
+  firstName: 'Eddie',
+  lastName: 'Thuo',
+  age: 28,
+  amount: '100',
+}
+
 const resolvers = {
   Query: {
-    user: () => ({
-      firstName: 'Eddie',
-      lastName: 'Thuo',
-      age: 28,
-      amount: '100',
-    })
+    user: (parent, args) => {
+      const { firstName } = args
+      if (demoUser.firstName === firstName) {
+        return demoUser
+      }
+      return {}
+    }
   },
 };
 
