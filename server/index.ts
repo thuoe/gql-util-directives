@@ -5,6 +5,8 @@ import encodingDirective from '@src/directives/encode';
 import regexDirective from '@src/directives/regex';
 import cacheDirective from '@src/directives/cache';
 import currencyDirective from '@src/directives/currency';
+import logDirective from '@src/directives/log';
+import path from 'path';
 
 const typeDefs = String.raw`#graphql
   type User {
@@ -15,18 +17,26 @@ const typeDefs = String.raw`#graphql
   }
 
   type Query {
-    user: User
+    user(firstName: String!): User @log(level: INFO)
   }
 `;
 
+const demoUser = {
+  firstName: 'Eddie',
+  lastName: 'Thuo',
+  age: 28,
+  amount: '100',
+}
+
 const resolvers = {
   Query: {
-    user: () => ({
-      firstName: 'Eddie',
-      lastName: 'Thuo',
-      age: 28,
-      amount: '100',
-    })
+    user: (parent, args) => {
+      const { firstName } = args
+      if (demoUser.firstName === firstName) {
+        return demoUser
+      }
+      return {}
+    }
   },
 };
 
@@ -34,12 +44,16 @@ const { encodingDirectiveTypeDefs, encodingDirectiveTransformer } = encodingDire
 const { regexDirectiveTypeDefs, regexDirectiveTransformer } = regexDirective()
 const { cacheDirectiveTypeDefs, cacheDirectiveTransformer } = cacheDirective()
 const { currencyDirectiveTypeDefs, currencyDirectiveTransformer } = currencyDirective()
+const { logDirectiveTypeDefs, logDirectiveTransformer } = logDirective({
+  filePath: path.join(__dirname, 'logs', 'application.log')
+})
 
 const transformers = [
   encodingDirectiveTransformer,
   regexDirectiveTransformer,
   cacheDirectiveTransformer,
   currencyDirectiveTransformer,
+  logDirectiveTransformer,
 ]
 
 let schema = makeExecutableSchema(({
@@ -48,6 +62,7 @@ let schema = makeExecutableSchema(({
     regexDirectiveTypeDefs,
     cacheDirectiveTypeDefs,
     currencyDirectiveTypeDefs,
+    logDirectiveTypeDefs,
     typeDefs
   ],
   resolvers

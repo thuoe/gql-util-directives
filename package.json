@@ -26,7 +26,8 @@
     "build:server": "tsc --project tsconfig.server.json",
     "dev": "nodemon --project tsconfig.server.json server/index.ts",
     "lint": "eslint .",
-    "test": "jest",
+    "test": "jest --silent",
+    "test:watch": "npm run test -- --watch test/*.ts",
     "prepare": "npm run build:prod",
     "release": "semantic-release"
   },
@@ -34,7 +35,8 @@
     "@graphql-tools/schema": "^10.0.2",
     "@graphql-tools/utils": "^10.0.13",
     "cheerio": "^1.0.0-rc.12",
-    "graphql": "^16.8.1"
+    "graphql": "^16.8.1",
+    "log4js": "^6.9.1"
   },
   "devDependencies": {
     "@apollo/server": "^4.10.0",
