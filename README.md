@@ -21,6 +21,8 @@ Simple utility library for custom GraphQL schema directives
   - [@cache](#cache)
     - [Overriding in-memory cache](#overriding-in-memory-cache)
   - [@currency](#currency)
+  - [@log](#log)
+    - [Logging to file](#logging-to-file)
 
 # Get started
 
@@ -215,10 +217,52 @@ You can use the `@currency` directive to fetch the latest exchange rate of a giv
 type Car {
   make: String
   model: String
-  price: String @currency(from: "GBP", to: "USD")
+  price: String @currency(from: GBP, to: USD)
 }
 ```
 
-The amount can either resolved with the scalar types `String` or `Float`
+The field can either be resolved with scalar types `String` or `Float`
 
 The valid currency codes to use as part of the directive's arguments can be found [here](./src/types.ts).
+
+## @log
+
+`logDirective({ directiveName, filePath }?: { directiveName?: string, filePath?: string })`
+
+Use the `@log` directive to log fields, queries and mutations once they are resolved.
+
+For example, this graphql schema with the directive on the query:
+
+```graphql
+  type User {
+    firstName: String
+    lastName: String 
+    age: Int 
+    amount: String
+  }
+
+  type Query {
+    user(firstName: String!): User @log(level: INFO)
+  }
+```
+
+Will log to the console in the following format:
+
+`[<TIMESTAMP>] [INFO] @log - Operation Type: query, Arguments: [{"firstName":"Eddie"}], Return Type: User`
+
+The following log levels are valid:
+
+- `INFO`
+- `DEBUG`
+- `WARN`
+- `ERROR`
+
+### Logging to file
+
+In order to migrate logs to a custom log file, you can define a filepath with the appropriate file name:
+
+```typescript
+  const { logDirectiveTypeDefs, logDirectiveTransformer } = logDirective({
+    filePath: path.join(__dirname, 'logs', 'application.log')
+  })
+```
